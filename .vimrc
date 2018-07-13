@@ -32,6 +32,8 @@ Plugin 'tweekmonster/braceless.vim'
 Plugin 'dhruvasagar/vim-table-mode'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'airblade/vim-gitgutter.git'
+Plugin 'ctrlpvim/ctrlp.vim'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -55,7 +57,7 @@ set shiftwidth=4     " Tabbing
 set cc=79            " PEP8 Line Limit (a good limit in general)
 set nu               " Line numbers
 set incsearch        " Incremental search highlight
-
+set updatetime=100   " Set update delay to 100ms
 "Keybinds
 " TAB DEDENT for command mode
 nnoremap <S-Tab> <<
@@ -65,3 +67,10 @@ inoremap <S-Tab> <C-d>
 map <C-b> :NERDTreeToggle<CR>
 " Clear trailing whitespace
 nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+
+" Always display gitgutter sign column
+if exists('&signcolumn')  " Vim 7.4.2201
+    set signcolumn=yes
+else
+    let g:gitgutter_sign_column_always = 1
+endif
