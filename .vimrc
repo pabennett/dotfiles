@@ -1,5 +1,7 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
+set encoding=utf-8
+scriptencoding utf-8
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -24,16 +26,16 @@ Plugin 'VundleVim/Vundle.vim'
 "Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " Avoid a name conflict with L9
 "Plugin 'user/L9', {'name': 'newL9'}
-Plugin 'severin-lemaignan/vim-minimap'
-Plugin 'scrooloose/nerdtree'
-Plugin 'terryma/vim-multiple-cursors'
+Plugin 'scrooloose/nerdtree.git'
+Plugin 'terryma/vim-multiple-cursors.git'
 Plugin 'nachumk/systemverilog.vim'
-Plugin 'tweekmonster/braceless.vim'
-Plugin 'dhruvasagar/vim-table-mode'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'airblade/vim-gitgutter.git'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'tpope/vim-fugitive.git'
+Plugin 'ervandew/supertab.git'
+Plugin 'w0rp/ale.git'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -49,15 +51,45 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+" Set Vim's updatetime to something quicker than the default 4000
+set updatetime=500
+
+" Set CTRL+P root directory behaviour
+let g:ctrlp_working_path_mode = '0'
+
+" Configure Airline Theme
+let g:airline_solarized_bg='dark'
+let g:airline_theme='hybridline'
+let g:airline_powerline_fonts = 1
+
+" Gitgutter
+let g:gitgutter_max_signs = 1000
+
+" ALE
+let g:ale_python_pylint_change_directory = 0
+let g:airline#extensions#ale#enabled = 1
+
+" Listchars
+set list
+set listchars=tab:▸\ ,trail:·,precedes:←,extends:→
+
+" Open splits intuitively
+set splitbelow
+set splitright
+
+" Clipboard across multiple vim sessions using tmp file
+vmap <leader>y :w! /tmp/vitmp<CR>
+vmap <leader>p :r! cat /tmp/vitmp<CR>
+
 syntax enable
 colorscheme monokai
-set expandtab        " Spaces not Tabs
-set tabstop=4        " PEP8 Tabbing
-set shiftwidth=4     " Tabbing
-set cc=79            " PEP8 Line Limit (a good limit in general)
-set nu               " Line numbers
-set incsearch        " Incremental search highlight
-set updatetime=100   " Set update delay to 100ms
+set expandtab                   " Spaces not Tabs
+set tabstop=4                   " PEP8 Tabbing
+set shiftwidth=4                " Tabbing
+set cc=79                       " PEP8 Line Limit (a good limit in general)
+set nu                          " Line numbers
+set backspace=indent,eol,start  " Make backspace behave properly
+
 "Keybinds
 " TAB DEDENT for command mode
 nnoremap <S-Tab> <<
@@ -67,10 +99,3 @@ inoremap <S-Tab> <C-d>
 map <C-b> :NERDTreeToggle<CR>
 " Clear trailing whitespace
 nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
-
-" Always display gitgutter sign column
-if exists('&signcolumn')  " Vim 7.4.2201
-    set signcolumn=yes
-else
-    let g:gitgutter_sign_column_always = 1
-endif
