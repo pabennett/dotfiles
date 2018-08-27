@@ -4,7 +4,21 @@ set encoding=utf-8
 scriptencoding utf-8
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
+
+if has('gui_running')
+    set guioptions-=T  " no toolbar
+  	if has('gui_win32')
+        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h10
+        set rtp+=$HOME/.vim/
+        set rtp+=$HOME/.vim/bundle/Vundle.vim
+        map <F11> <Esc>:call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
+        set noerrorbells visualbell t_vb=
+		autocmd GUIEnter * set visualbell t_vb=
+   	endif
+else
+    set rtp+=~/.vim/bundle/Vundle.vim
+endif
+
 call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
 "call vundle#begin('~/some/path/here')
