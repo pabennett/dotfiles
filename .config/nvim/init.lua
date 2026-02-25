@@ -106,14 +106,6 @@ vim.keymap.set('n', 'ty', ':Tyank<CR>')
 vim.keymap.set('v', 'ty', ':Tyank<CR>')
 vim.keymap.set('n', 'tp', ':Tput<CR>')
 
--- Make CR behave like org_meta_return in org files
-vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'org',
-    callback = function()
-        vim.keymap.set('i', '<CR>', '<cmd>lua require("orgmode").action("org_mappings.meta_return")<CR>', {buffer = true})
-    end,
-})
-
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -165,10 +157,13 @@ require('lazy').setup({
       vim.g['airline#extensions#tabline#enabled'] = 1
     end,
   },
-
   {
     'airblade/vim-gitgutter',
-    config = function() end,
+    config = function()
+        vim.cmd('highlight GitGutterAdd     guifg=#009900 guibg=NONE ctermfg=2 ctermbg=NONE')
+        vim.cmd('highlight GitGutterChange  guifg=#bbbb00 guibg=NONE ctermfg=3 ctermbg=NONE')
+        vim.cmd('highlight GitGutterDelete  guifg=#ff2222 guibg=NONE ctermfg=1 ctermbg=NONE')
+    end,
   },
   {
     'tpope/vim-fugitive',
@@ -213,6 +208,9 @@ require('lazy').setup({
             org_capture_templates = {
                 t = { description = 'Task', template = '* TODO %?\n SCHEDULED: %t' },
                 n = { description = 'Note', template = '* %?\n %u' },
+            },
+            mappings = {
+                org_return_uses_meta_return = true
             },
         })
         vim.lsp.enable('org')
@@ -412,6 +410,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>of', function()
         builtin.find_files { cwd = '~/orgfiles', type_filter = 'file' }
       end, { desc = '[O]rg [F]iles' })
+
+      -- Wiki index
+      vim.keymap.set('n', '<leader>wi', ':e ~/orgfiles/index.org<CR>', { desc = '[W]iki [I]ndex' })
     end,
   },
 
