@@ -752,7 +752,6 @@ require('lazy').setup({
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-
     {
     'stevearc/oil.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -765,7 +764,6 @@ require('lazy').setup({
             vim.keymap.set('n', '-', '<cmd>Oil<CR>', {desc = 'Open parent directory' })
         end,
     },
-
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
