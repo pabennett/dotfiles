@@ -112,7 +112,7 @@ hi WhichKey ctermfg=148 ctermbg=NONE cterm=NONE guifg=#a6e22e guibg=NONE gui=NON
 hi WhichKeyGroup ctermfg=81 ctermbg=NONE cterm=NONE guifg=#66d9ef guibg=NONE gui=NONE
 hi WhichKeyDesc ctermfg=231 ctermbg=NONE cterm=NONE guifg=#f8f8f2 guibg=NONE gui=NONE
 hi WhichKeySeparator ctermfg=242 ctermbg=NONE cterm=NONE guifg=#75715e guibg=NONE gui=NONE
-hi WhichKeyNormal ctermfg=231 ctermbg=237 cterm=NONE guifg=#f8f8f2 guibg=#3c3d37 gui=NONE
-hi WhichKeyFloat ctermfg=NONE ctermbg=237 cterm=NONE guifg=NONE guibg=#3c3d37 gui=NONE
-hi WhichKeyBorder ctermfg=241 ctermbg=237 cterm=NONE guifg=#64645e guibg=#3c3d37 gui=NONE
+hi WhichKeyNormal ctermfg=231 ctermbg=235 cterm=NONE guifg=#f8f8f2 guibg=#272822 gui=NONE
+hi WhichKeyFloat ctermfg=NONE ctermbg=235 cterm=NONE guifg=NONE guibg=#272822 gui=NONE
+hi WhichKeyBorder ctermfg=241 ctermbg=235 cterm=NONE guifg=#64645e guibg=#272822 gui=NONE
 hi WhichKeyValue ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE
