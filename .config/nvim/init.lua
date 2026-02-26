@@ -11,8 +11,8 @@ vim.g.have_nerd_font = true
 -- Make line numbers default
 vim.o.number = true
 
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.o.mouse = 'a'
+-- Disable mouse
+vim.o.mouse = ''
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
@@ -221,20 +221,6 @@ require('lazy').setup({
   },
   { 'akinsho/bufferline.nvim', version = '*', dependencies = 'nvim-tree/nvim-web-devicons' },
 
-  -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
-  --
-  -- This is often very useful to both group configuration, as well as handle
-  -- lazy loading plugins that don't need to be loaded immediately at startup.
-  --
-  -- For example, in the following configuration, we use:
-  --  event = 'VimEnter'
-  --
-  -- which loads which-key before all the UI elements are loaded. Events can be
-  -- normal autocommands events (`:help autocmd-events`).
-  --
-  -- Then, because we use the `opts` key (recommended), the configuration runs
-  -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
-
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
@@ -288,13 +274,6 @@ require('lazy').setup({
       },
     },
   },
-
-  -- NOTE: Plugins can specify dependencies.
-  --
-  -- The dependencies are proper plugin specifications as well - anything
-  -- you do for a plugin at the top level, you can do for a dependency.
-  --
-  -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
@@ -484,9 +463,6 @@ require('lazy').setup({
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
-          -- NOTE: Remember that Lua is a real programming language, and as such it is possible
-          -- to define small helper and utility functions so you don't have to repeat yourself.
-          --
           -- In this case, we create a function that lets us more easily define mappings specific
           -- for LSP related items. It sets the mode, buffer and description for us each time.
           local map = function(keys, func, desc, mode)
@@ -694,7 +670,6 @@ require('lazy').setup({
     end,
   },
 
-
   { -- Autocompletion
     'saghen/blink.cmp',
     event = 'VimEnter',
@@ -727,8 +702,7 @@ require('lazy').setup({
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
-
+        preset = 'super-tab',
 
       },
 
@@ -768,55 +742,13 @@ require('lazy').setup({
   },
 
   { -- Colorscheme configuration
-    -- To use a plugin colorscheme, uncomment one of the lines below and
-    -- comment out the 'dir' line. Then update vim.cmd.colorscheme in config.
-    --
-    -- 'folke/tokyonight.nvim',
-    -- 'tanvirtin/monokai.nvim',
-    -- 'erichdongubler/vim-sublime-monokai',
-    -- 'patstockwell/vim-monokai-tasty',
-    -- 'cpea2506/one_monokai.nvim',
-    -- 'navarasu/onedark.nvim',
-    -- 'sainnhe/sonokai',
-    -- 'tomasr/molokai',
-    -- 'ku1ik/vim-monokai',
-
     -- Use local colorscheme from colors/ directory (no plugin needed)
     dir = vim.fn.stdpath 'config',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
       vim.cmd.colorscheme 'monokai'
-
-      -- molokai options
-      -- vim.g.molokai_original = 0
-      -- vim.g.rehash256 = 1
-
-      -- vim-monokai-tasty options
-      -- vim.g.vim_monokai_tasty_italic = 1
-      -- vim.g.vim_monokai_tasty_machine_tint = 0
-      -- vim.g.vim_monokai_highlight_active_window = 1
-      -- vim.g.airline_theme = 'monokai_tasty'
     end,
   },
-  --{
-  --  'cpea2506/one_monokai.nvim',
-  --  config = function()
-  --    require('one_monokai').setup {
-  --      transparent = true,
-  --    }
-  --  end,
-  --},
-  --{
-  --    "navarasu/onedark.nvim",
-  --    priority = 1000, -- make sure to load this before all the other start plugins
-  --    config = function()
-  --        require('onedark').setup {
-  --            style = 'darker'
-  --        }
-  --        -- Enable theme
-  --        require('onedark').load()
-  --    end
-  --},
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -866,9 +798,6 @@ require('lazy').setup({
       statusline.section_location = function()
         return '%2l:%-2v'
       end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
   { -- Highlight, edit, and navigate code
@@ -896,33 +825,6 @@ require('lazy').setup({
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
-
-  -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
-
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
-
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
-  --
-  -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
-  -- Or use telescope!
-  -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
-  -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
