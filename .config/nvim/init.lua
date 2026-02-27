@@ -217,6 +217,10 @@ require('lazy').setup({
                 mappings = {
                     org_return_uses_meta_return = true
                 },
+                org_blank_before_new_entry = {
+                    heading = false,
+                    plain_list_item = false,
+                },
             })
             vim.lsp.enable('org')
             vim.api.nvim_create_autocmd('FileType', {
