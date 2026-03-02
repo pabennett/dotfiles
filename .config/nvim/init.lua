@@ -5,7 +5,7 @@ vim.g.maplocalleader = '\\'
 -- [[ Theme selection ]]
 -- Switch between 'catppuccin' and 'monokai'
 -- This also affects the lualine config
-local theme = 'catppuccin'
+local theme = 'monokai'
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
