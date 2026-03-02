@@ -146,15 +146,47 @@ local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
 
 require('lazy').setup({
+    -- vim-airline replaced by lualine for native catppuccin support
+    -- {
+    --     'vim-airline/vim-airline',
+    --     dependencies = { 'vim-airline/vim-airline-themes' },
+    --     init = function()
+    --         vim.g.airline_solarized_bg = 'dark'
+    --         -- vim.g.airline_theme = 'base16_monokai'
+    --         vim.g.airline_theme = 'catppuccin'
+    --         vim.g.airline_powerline_fonts = 1
+    --         vim.g.airline_section_z = ''
+    --         vim.g['airline#extensions#tabline#enabled'] = 1
+    --     end,
+    -- },
+
     {
-        'vim-airline/vim-airline',
-        dependencies = { 'vim-airline/vim-airline-themes' },
-        init = function()
-            vim.g.airline_solarized_bg = 'dark'
-            vim.g.airline_theme = 'base16_monokai'
-            vim.g.airline_powerline_fonts = 1
-            vim.g.airline_section_z = ''
-            vim.g['airline#extensions#tabline#enabled'] = 1
+        'nvim-lualine/lualine.nvim',
+        dependencies = { 'nvim-tree/nvim-web-devicons' },
+        config = function()
+            require('lualine').setup {
+                options = {
+                    theme = 'catppuccin',
+                    component_separators = '',
+                    section_separators = { left = '', right = '' },
+                },
+                sections = {
+                    lualine_a = { { 'mode', separator = { left = '' }, right_padding = 2 } },
+                    lualine_b = { 'branch', 'diff', 'diagnostics' },
+                    lualine_c = { 'filename' },
+                    lualine_x = { 'filetype' },
+                    lualine_y = { 'progress' },
+                    lualine_z = { { 'location', separator = { right = '' }, left_padding = 2 } },
+                },
+                inactive_sections = {
+                    lualine_a = { 'filename' },
+                    lualine_b = {},
+                    lualine_c = {},
+                    lualine_x = {},
+                    lualine_y = {},
+                    lualine_z = { 'location' },
+                },
+            }
         end,
     },
 
@@ -187,10 +219,7 @@ require('lazy').setup({
         config = function() end,
     },
 
-    {
-        'vim-airline/vim-airline-themes',
-        config = function() end,
-    },
+    -- { 'vim-airline/vim-airline-themes', config = function() end },
 
     {
         'kshenoy/vim-signature',
@@ -236,11 +265,6 @@ require('lazy').setup({
         end,
     },
 
-    {
-        'akinsho/bufferline.nvim',
-        version = '*',
-        dependencies = 'nvim-tree/nvim-web-devicons',
-    },
 
     { -- Useful plugin to show you pending keybinds.
         'folke/which-key.nvim',
@@ -387,9 +411,14 @@ require('lazy').setup({
     -- Bufferline
     {
         'akinsho/bufferline.nvim',
-        dependencies = { 'nvim-tree/nvim-web-devicons' },
+        dependencies = { 'nvim-tree/nvim-web-devicons', { 'catppuccin/nvim', name = 'catppuccin' } },
         config = function()
-            require('bufferline').setup {}
+            require('bufferline').setup {
+                highlights = require('catppuccin.special.bufferline').get_theme(),
+                options = {
+                    separator_style = 'slope',
+                },
+            }
         end,
     },
 
@@ -616,11 +645,64 @@ require('lazy').setup({
         },
     },
 
-    { -- Colorscheme configuration
-        dir = vim.fn.stdpath 'config',
+    -- { -- Colorscheme configuration (monokai - commented out)
+    --     dir = vim.fn.stdpath 'config',
+    --     priority = 1000,
+    --     config = function()
+    --         vim.cmd.colorscheme 'monokai'
+    --     end,
+    -- },
+
+    { -- Catppuccin colorscheme
+        'catppuccin/nvim',
+        name = 'catppuccin',
         priority = 1000,
         config = function()
-            vim.cmd.colorscheme 'monokai'
+            require('catppuccin').setup({
+                flavour = 'mocha', -- latte, frappe, macchiato, mocha
+                background = {
+                    light = 'latte',
+                    dark = 'mocha',
+                },
+                integrations = {
+                    -- Completion
+                    blink_cmp = true,
+                    -- UI
+                    bufferline = true,
+                    fidget = true,
+                    which_key = true,
+                    -- Git
+                    gitgutter = true,
+                    -- Mini
+                    mini = { enabled = true, indentscope_color = '' },
+                    -- LSP
+                    native_lsp = {
+                        enabled = true,
+                        virtual_text = {
+                            errors = { 'italic' },
+                            hints = { 'italic' },
+                            warnings = { 'italic' },
+                            information = { 'italic' },
+                            ok = { 'italic' },
+                        },
+                        underlines = {
+                            errors = { 'underline' },
+                            hints = { 'underline' },
+                            warnings = { 'underline' },
+                            information = { 'underline' },
+                            ok = { 'underline' },
+                        },
+                        inlay_hints = { background = true },
+                    },
+                    -- Search / Navigation
+                    telescope = { enabled = true },
+                    -- Comments
+                    todo_comments = true,
+                    -- Syntax
+                    treesitter = true,
+                },
+            })
+            vim.cmd.colorscheme 'catppuccin'
         end,
     },
 
@@ -654,14 +736,12 @@ require('lazy').setup({
             -- Add/delete/replace surroundings (brackets, quotes, etc.)
             require('mini.surround').setup()
 
-            -- Simple and easy statusline.
-            local statusline = require 'mini.statusline'
-            statusline.setup { use_icons = vim.g.have_nerd_font }
-
-            ---@diagnostic disable-next-line: duplicate-set-field
-            statusline.section_location = function()
-                return '%2l:%-2v'
-            end
+            -- mini.statusline disabled in favour of lualine
+            -- local statusline = require 'mini.statusline'
+            -- statusline.setup { use_icons = vim.g.have_nerd_font }
+            -- statusline.section_location = function()
+            --     return '%2l:%-2v'
+            -- end
         end,
     },
 
