@@ -280,9 +280,15 @@ require('lazy').setup({
                 callback = function()
                     vim.bo.shiftwidth = 4
                     vim.bo.tabstop = 4
+                    vim.bo.swapfile = false
                     -- Prevent headings collapsing when leaving insert mode (orgmode uses
                     -- foldmethod=expr which re-evaluates on every InsertLeave)
                     vim.opt_local.foldlevel = 99
+
+                    -- Highlight CLAUDE: keyword
+                    vim.api.nvim_set_hl(0, 'OrgClaudeKeyword', { fg = '#FD971F', bold = true })
+                    vim.fn.matchadd('OrgClaudeKeyword', 'CLAUDE:')
+                    vim.fn.matchadd('OrgClaudeKeyword', 'Claude:')
                 end,
             })
         end,
