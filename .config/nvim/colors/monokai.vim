@@ -30,6 +30,15 @@ let s:orange     = ['#fd971f', 208]  " block parameters
 let s:diff_add   = ['#46830c',  64]  " diff added bg
 let s:diff_del   = ['#8b0807',  88]  " diff deleted fg
 let s:diff_txt   = ['#204a87',  24]  " diff changed text bg
+
+" special highlights
+let s:kw_special_1 = ['#fd1e1e',  196]  " special keyword (red)
+let s:kw_special_2 = ['#fd561e',  202]  " special keyword (red-orange)
+let s:kw_special_3 = ['#fcfd1e',  226]  " special keyword (yellow)
+let s:kw_special_4 = ['#1efd56',   47]  " special keyword (emerald)
+let s:kw_special_5 = ['#1e8dfd',   33]  " special keyword (azure)
+let s:kw_special_6 = ['#8d1efd',   93]  " special keyword (violet)
+let s:kw_special_7 = ['#fd1ec5',  200]  " special keyword (pink)
 " ───────────────────────────────────────────────────────────────────────────────
 
 " Helper: s:h(group, fg, bg [, gui_attr [, cterm_attr]])
