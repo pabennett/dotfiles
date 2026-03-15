@@ -92,6 +92,10 @@ vim.o.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10
 
+-- First Tab completes to longest common prefix, second Tab cycles through full list
+vim.o.wildmode = 'longest:full,full'
+vim.o.wildoptions = 'pum'
+
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
@@ -670,6 +674,8 @@ require('lazy').setup({
             completion = {
                 documentation = { auto_show = false, auto_show_delay_ms = 500 },
             },
+
+            cmdline = { enabled = false },
 
             sources = {
                 default = { 'lsp', 'path', 'snippets', 'lazydev' },
