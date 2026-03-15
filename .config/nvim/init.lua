@@ -17,18 +17,24 @@ vim.g.have_nerd_font = true
 vim.o.number = true
 
 -- Disable mouse
-vim.o.mouse = ''
+vim.o.mouse = 'a'
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
 
--- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-vim.schedule(function()
-    vim.o.clipboard = 'unnamedplus'
-end)
+-- Sync clipboard between OS and Neovim via OSC 52 (over SSH)
+vim.o.clipboard = 'unnamedplus'
+vim.g.clipboard = {
+    name = 'OSC 52',
+    copy = {
+        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+    },
+    paste = {
+        ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+        ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+    },
+}
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -120,6 +126,12 @@ vim.keymap.set('n', 'tp', ':Tput<CR>')
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 vim.opt.termguicolors = true
+
+-- Common typo aliases
+vim.api.nvim_create_user_command('W', 'w', {})
+vim.api.nvim_create_user_command('Wq', 'wq', {})
+vim.api.nvim_create_user_command('WQ', 'wq', {})
+vim.api.nvim_create_user_command('Q', 'q', {})
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
