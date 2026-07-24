@@ -2,6 +2,12 @@
 vim.g.mapleader = '\\'
 vim.g.maplocalleader = '\\'
 
+-- This config uses native Lua plugins rather than legacy remote-plugin hosts.
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+
 -- [[ Theme selection ]]
 -- Switch between 'catppuccin' and 'monokai'
 -- This also affects the lualine config
@@ -168,19 +174,6 @@ rtp:prepend(lazypath)
 
 require('lazy').setup({
     {
-        'vim-airline/vim-airline',
-        enabled = false,
-        dependencies = { 'vim-airline/vim-airline-themes' },
-        init = function()
-            vim.g.airline_solarized_bg = 'dark'
-            vim.g.airline_theme = 'base16_monokai'
-            vim.g.airline_powerline_fonts = 1
-            vim.g.airline_section_z = ''
-            vim.g['airline#extensions#tabline#enabled'] = 1
-        end,
-    },
-
-    {
         'nvim-lualine/lualine.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
         config = function()
@@ -230,11 +223,54 @@ require('lazy').setup({
     },
 
     {
-        'airblade/vim-gitgutter',
+        'lewis6991/gitsigns.nvim',
         config = function()
-            vim.cmd('highlight GitGutterAdd     guifg=#009900 guibg=NONE ctermfg=2 ctermbg=NONE')
-            vim.cmd('highlight GitGutterChange  guifg=#bbbb00 guibg=NONE ctermfg=3 ctermbg=NONE')
-            vim.cmd('highlight GitGutterDelete  guifg=#ff2222 guibg=NONE ctermfg=1 ctermbg=NONE')
+            require('gitsigns').setup {
+                on_attach = function(bufnr)
+                    local gitsigns = require 'gitsigns'
+                    local function map(mode, lhs, rhs, desc)
+                        vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+                    end
+
+                    -- Preserve the vim-gitgutter workflow, including native diff
+                    -- navigation when the current window is already in diff mode.
+                    map('n', ']c', function()
+                        if vim.wo.diff then
+                            vim.cmd.normal { ']c', bang = true }
+                        else
+                            gitsigns.nav_hunk 'next'
+                        end
+                    end, 'Next Git hunk')
+                    map('n', '[c', function()
+                        if vim.wo.diff then
+                            vim.cmd.normal { '[c', bang = true }
+                        else
+                            gitsigns.nav_hunk 'prev'
+                        end
+                    end, 'Previous Git hunk')
+
+                    map('n', '<leader>hs', gitsigns.stage_hunk, '[H]unk [S]tage')
+                    map('v', '<leader>hs', function()
+                        gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+                    end, '[H]unk [S]tage selection')
+                    map('n', '<leader>hr', gitsigns.reset_hunk, '[H]unk [R]eset')
+                    map('v', '<leader>hr', function()
+                        gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+                    end, '[H]unk [R]eset selection')
+                    map('n', '<leader>hS', gitsigns.stage_buffer, '[H]unk [S]tage buffer')
+                    map('n', '<leader>hu', gitsigns.undo_stage_hunk, '[H]unk [U]ndo stage')
+                    map('n', '<leader>hR', gitsigns.reset_buffer, '[H]unk [R]eset buffer')
+                    map('n', '<leader>hp', gitsigns.preview_hunk, '[H]unk [P]review')
+                    map('n', '<leader>hb', function()
+                        gitsigns.blame_line { full = true }
+                    end, '[H]unk [B]lame line')
+                    map('n', '<leader>hd', gitsigns.diffthis, '[H]unk [D]iff index')
+                    map('n', '<leader>hD', function()
+                        gitsigns.diffthis '~'
+                    end, '[H]unk [D]iff parent')
+                    map({ 'o', 'x' }, 'ih', gitsigns.select_hunk, 'Select Git hunk')
+                end,
+            }
         end,
     },
 
@@ -244,30 +280,32 @@ require('lazy').setup({
     },
 
     {
-        'tpope/vim-git',
-        config = function() end,
-    },
-
-    {
         'tpope/vim-tbone',
         config = function() end,
     },
 
     {
-        'vimwiki/vimwiki',
-        config = function() end,
+        'MeanderingProgrammer/render-markdown.nvim',
+        dependencies = {
+            'neovim-treesitter/nvim-treesitter',
+            'nvim-tree/nvim-web-devicons',
+        },
+        opts = {
+            latex = { enabled = false },
+            yaml = { enabled = false },
+        },
     },
 
-    { 'vim-airline/vim-airline-themes', enabled = theme == 'monokai', config = function() end },
-
     {
-        'kshenoy/vim-signature',
-        config = function() end,
-    },
-
-    {
-        'jlanzarotta/bufexplorer',
-        config = function() end,
+        'chentoast/marks.nvim',
+        event = 'VeryLazy',
+        opts = {
+            mappings = {
+                next = ']m',
+                prev = '[m',
+                toggle = 'm;',
+            },
+        },
     },
 
     {
@@ -453,6 +491,25 @@ require('lazy').setup({
         end,
     },
 
+    {
+        'stevearc/aerial.nvim',
+        dependencies = {
+            'neovim-treesitter/nvim-treesitter',
+            'nvim-tree/nvim-web-devicons',
+        },
+        opts = {
+            backends = { 'treesitter', 'lsp', 'markdown', 'man' },
+            layout = {
+                default_direction = 'prefer_right',
+                max_width = { 40, 0.25 },
+            },
+        },
+        cmd = { 'AerialToggle', 'AerialOpen', 'AerialClose', 'AerialNext', 'AerialPrev', 'AerialInfo' },
+        keys = {
+            { '<leader>a', '<cmd>AerialToggle!<CR>', desc = 'Toggle symbol outline' },
+        },
+    },
+
     -- Bufferline
     {
         'akinsho/bufferline.nvim',
@@ -632,6 +689,10 @@ require('lazy').setup({
                         },
                     },
                 },
+                marksman = {
+                    filetypes = { 'markdown', 'markdown.mdx' },
+                },
+                clangd = {},
             }
 
             local ensure_installed = vim.tbl_keys(servers or {})
@@ -639,18 +700,39 @@ require('lazy').setup({
             })
             require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+            for server_name, server in pairs(servers) do
+                server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+                vim.lsp.config(server_name, server)
+            end
+
             require('mason-lspconfig').setup {
                 ensure_installed = {},
-                automatic_installation = false,
-                handlers = {
-                    function(server_name)
-                        local server = servers[server_name] or {}
-                        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-                        require('lspconfig')[server_name].setup(server)
-                    end,
-                },
+                automatic_enable = vim.tbl_keys(servers),
             }
         end,
+    },
+
+    {
+        'stevearc/conform.nvim',
+        cmd = { 'ConformInfo' },
+        keys = {
+            {
+                '<leader>f',
+                function()
+                    require('conform').format {
+                        async = true,
+                        lsp_format = 'fallback',
+                    }
+                end,
+                mode = { 'n', 'x' },
+                desc = '[F]ormat buffer or selection',
+            },
+        },
+        opts = {
+            -- Formatting is deliberately opt-in. With no external formatter
+            -- configured, this uses an attached LSP formatter when available.
+            formatters_by_ft = {},
+        },
     },
 
     { -- Autocompletion
@@ -659,6 +741,7 @@ require('lazy').setup({
         version = '1.*',
         dependencies = {
             'folke/lazydev.nvim',
+            'rafamadriz/friendly-snippets',
         },
         --- @module 'blink.cmp'
         --- @type blink.cmp.Config
@@ -686,7 +769,7 @@ require('lazy').setup({
 
             snippets = { preset = 'default' },
 
-            fuzzy = { implementation = 'lua' },
+            fuzzy = { implementation = 'prefer_rust' },
 
             -- Shows a signature help window while you type arguments for a function
             signature = { enabled = true },
@@ -722,7 +805,7 @@ require('lazy').setup({
                     fidget = true,
                     which_key = true,
                     -- Git
-                    gitgutter = true,
+                    gitsigns = true,
                     -- Mini
                     mini = { enabled = true, indentscope_color = '' },
                     -- LSP
@@ -778,31 +861,78 @@ require('lazy').setup({
     },
 
     { -- Collection of various small independent plugins/modules
-        'echasnovski/mini.nvim',
+        'nvim-mini/mini.nvim',
         config = function()
             -- Better Around/Inside textobjects
             require('mini.ai').setup { n_lines = 500 }
 
             -- Add/delete/replace surroundings (brackets, quotes, etc.)
             require('mini.surround').setup()
+
+            -- Insert matching brackets, quotes, and backticks.
+            require('mini.pairs').setup()
         end,
     },
 
     { -- Highlight, edit, and navigate code
-        'nvim-treesitter/nvim-treesitter',
+        'neovim-treesitter/nvim-treesitter',
+        dependencies = { 'neovim-treesitter/treesitter-parser-registry' },
+        lazy = false,
         build = ':TSUpdate',
-        main = 'nvim-treesitter.configs',
-        opts = {
-            ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-            auto_install = true,
-            highlight = {
-                enable = true,
-                additional_vim_regex_highlighting = { 'ruby' },
-            },
-            indent = { enable = true, disable = { 'ruby' } },
-        },
+        config = function()
+            local parsers = {
+                'bash',
+                'c',
+                'cpp',
+                'csv',
+                'diff',
+                'ecma',
+                'gdscript',
+                'gdshader',
+                'git_rebase',
+                'gitcommit',
+                'gitignore',
+                'glsl',
+                'godot_resource',
+                'html',
+                'html_tags',
+                'ini',
+                'javascript',
+                'jsx',
+                'json',
+                'lua',
+                'luadoc',
+                'markdown',
+                'markdown_inline',
+                'python',
+                'query',
+                'tmux',
+                'toml',
+                'tsv',
+                'v',
+                'vim',
+                'vimdoc',
+            }
+            local treesitter = require 'nvim-treesitter'
+            treesitter.setup {
+                install_dir = vim.fs.joinpath(vim.fn.stdpath 'data', 'site'),
+            }
+            treesitter.install(parsers)
+
+            vim.api.nvim_create_autocmd('FileType', {
+                group = vim.api.nvim_create_augroup('treesitter-start', { clear = true }),
+                callback = function(event)
+                    local ok = pcall(vim.treesitter.start, event.buf)
+                    if ok and vim.bo[event.buf].filetype ~= 'ruby' then
+                        vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                    end
+                end,
+            })
+        end,
     },
 }, {
+    lockfile = vim.fn.expand '~/Dropbox/dotfiles/.config/nvim/lazy-lock.json',
+    rocks = { enabled = false },
     ui = {
         icons = vim.g.have_nerd_font and {} or {
             cmd = '⌘',
